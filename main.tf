@@ -16,16 +16,23 @@
 # Create a VPC
 resource "aws_security_group" "dg-tf-sg" {
   name        = "dg-tf-sg"
-  description = "Allow TLS inbound traffic"
-  vpc_id      = aws_vpc.main.id
+  description = "Tf security group demo"
+  #vpc_id      = aws_vpc.main.id
 
   ingress {
-    description      = "TLS from VPC"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = [aws_vpc.main.cidr_block]
-    ipv6_cidr_blocks = [aws_vpc.main.ipv6_cidr_block]
+    description = "SSH ALLOWED"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "ssh"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "TCP ALLOWED"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -38,5 +45,15 @@ resource "aws_security_group" "dg-tf-sg" {
 
   tags = {
     Name = "dg-tf-sg"
+  }
+}
+
+
+r#aws vpcesource "aws_vpc" "main" {
+  cidr_block       = "10.0.0.0/16"
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "main"
   }
 }
